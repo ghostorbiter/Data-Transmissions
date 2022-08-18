@@ -1,0 +1,216 @@
+#3A
+
+#R1
+config terminal
+cdp run
+interface loopback 0
+ip address 192.168.0.1 255.255.255.255
+interface e0/0
+ip address 192.168.11.1 255.255.255.252
+cdp enable
+no shutdown
+end
+
+#R2
+config terminal
+interface loopback 0
+ip address 192.168.0.2 255.255.255.255
+interface e0/0
+ip address 192.168.11.2 255.255.255.252
+no shutdown
+interface e0/2
+ip address 192.168.10.1 255.255.255.252
+no shutdown
+interface e0/1
+ip address 192.168.10.5 255.255.255.252
+no shutdown
+end
+
+#R3
+config terminal
+interface loopback 0
+ip address 192.168.0.3 255.255.255.255
+interface e0/2
+ip address 192.168.10.2 255.255.255.252
+no shutdown
+interface e0/3
+ip address 192.168.10.10 255.255.255.252
+no shutdown
+interface e0/0
+ip address 192.168.10.17 255.255.255.252
+no shutdown
+end
+
+#R4
+config terminal
+interface loopback 0
+ip address 192.168.0.4 255.255.255.255
+interface e0/1
+ip address 192.168.10.6 255.255.255.252
+no shutdown
+interface e0/3
+ip address 192.168.10.9 255.255.255.252
+no shutdown
+interface e0/2
+ip address 192.168.10.13 255.255.255.252
+no shutdown
+end
+
+#R5
+config terminal
+interface loopback 0
+ip address 192.168.0.5 255.255.255.255
+interface e0/0
+ip address 192.168.10.18 255.255.255.252
+no shutdown
+interface e0/2
+ip address 192.168.10.14 255.255.255.252
+no shutdown
+end
+
+#R1-R5
+show cdp neighbors
+show ip route
+
+#3B
+
+#R1
+config terminal
+router ospf 1
+network 192.168.11.0 0.0.0.3 area 0
+end
+
+#R2
+config terminal
+router ospf 2
+network 192.168.11.0 0.0.0.3 area 0
+network 192.168.10.0 0.0.0.3 area 0
+network 192.168.10.4 0.0.0.3 area 0
+end
+
+#R3
+config terminal
+router ospf 3
+network 192.168.10.0 0.0.0.3 area 0
+network 192.168.10.8 0.0.0.3 area 0
+network 192.168.10.16 0.0.0.3 area 0
+end
+
+#R4
+config terminal
+router ospf 4
+network 192.168.10.4 0.0.0.3 area 0
+network 192.168.10.8 0.0.0.3 area 0
+network 192.168.10.12 0.0.0.3 area 0
+end
+
+#R5
+config terminal
+router ospf 5
+network 192.168.10.12 0.0.0.3 area 0
+network 192.168.10.16 0.0.0.3 area 0
+end
+
+#R1-R5
+show ip ospf
+show ip route
+
+#3C
+
+#R2
+config terminal
+interface e0/2
+ip ospf network point-to-point
+interface e0/1
+ip ospf network point-to-point
+end
+
+#R3
+config terminal
+interface e0/2
+ip ospf network point-to-point
+interface e0/0
+ip ospf network point-to-point
+end
+
+#R4
+config terminal
+interface e0/1
+ip ospf network point-to-point
+interface e0/2
+ip ospf network point-to-point
+end
+
+#R5
+config terminal
+interface e0/0
+ip ospf network point-to-point
+interface e0/2
+ip ospf network point-to-point
+end
+
+
+
+#3D
+
+#R1
+config terminal
+router ospf 1
+network 192.168.11.0 0.0.0.3 area 1
+end
+
+#R2
+config terminal
+router ospf 2
+network 192.168.11.0 0.0.0.3 area 1
+end
+
+#R1
+show ip ospf database
+show ip ospf database summary
+
+#R5
+show ip ospf database
+show ip ospf database summary
+
+#R1-R5
+show ip route
+
+#3E
+
+#R4
+ping 192.168.11.1
+traceroute 192.168.11.1
+
+#R1
+show ip route
+
+#R2
+show ip ospf interface brief
+show ip ospf interface | include protocol | Cost
+show interface | include protocol | BW
+
+#R4
+show ip ospf interface brief
+show ip ospf interface | include protocol | Cost
+show interface | include protocol | BW
+
+#R2
+config terminal
+interface e0/1
+ip ospf cost 100
+end
+
+#R4
+config terminal
+interface e0/1
+ip ospf cost 100
+end
+
+#R4
+show ip ospf interface | include protocol | Cost
+ping 192.168.11.1
+traceroute 192.168.11.1
+
+#R1-R5
+show running-config
